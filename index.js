@@ -1,8 +1,9 @@
+require("dotenv").config();
 const TelegramBot = require("node-telegram-bot-api");
 const { parseString } = require("xml2js");
 const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
-const TOKEN = "6468141535:AAHqWqokBwhUYG-QxpTQDK9ZUJF7X6jURGY";
+const TOKEN = process.env.TOKEN;
 const bot = new TelegramBot(TOKEN, { polling: true });
 
 let chatIds = [];
