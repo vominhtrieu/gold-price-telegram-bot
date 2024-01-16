@@ -1,0 +1,17 @@
+{
+  "name": "gold-price-notification",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "node-cron": "^3.0.3",
+    "node-fetch": "^3.3.2",
+    "node-telegram-bot-api": "^0.64.0",
+    "xml2js": "^0.6.2"
+  }
+}
