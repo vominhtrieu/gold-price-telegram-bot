@@ -92,7 +92,7 @@ const saveCurrentPrice = (price) => {
 }
 
 // Schedule tasks to be run on every 1 hour
-cron.schedule("* * * * *", function () {
+cron.schedule("0 * * * *", function () {
   getGoldPrice((text) => {
     loadCurrentPrice((currentPrice) => {
       if (currentPrice === text) return;
