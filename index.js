@@ -1,6 +1,8 @@
 require("dotenv").config();
 const TelegramBot = require("node-telegram-bot-api");
 const { parseString } = require("xml2js");
+const cron = require("node-cron");
+const fs = require("fs");
 const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
 const TOKEN = process.env.TOKEN;
@@ -9,14 +11,12 @@ const bot = new TelegramBot(TOKEN, { polling: true });
 let chatIds = [];
 
 const saveChatIdsToFile = () => {
-  const fs = require("fs");
   fs.writeFile("./chatIds.txt", JSON.stringify(chatIds), function (err) {
     if (err) return console.log(err);
   });
 };
 
 const loadChatIdsFromFile = () => {
-  const fs = require("fs");
   fs.readFile("./chatIds.txt", "utf8", function (err, data) {
     if (err) {
       chatIds = [];
@@ -66,24 +66,43 @@ function getGoldPrice(callback) {
           city["item"].forEach((item) => {
             html += ` - <b>${item["$"]["type"]}</b>: <code>${item["$"]["buy"]}/${item["$"]["sell"]}</code>\n`;
           });
+          html += "\n";
         });
         callback(html);
       });
     });
 }
 
-let currentPrice = "";
+const loadCurrentPrice = (cb) => {
+  const fs = require("fs");
+  fs.readFile("./currentPrice.txt", "utf8", function (err, data) {
+    if (err) {
+      cb("");
+    } else {
+      cb(data);
+    }
+  });
+};
 
-const cron = require("node-cron");
+const saveCurrentPrice = (price) => {
+  const fs = require("fs");
+  fs.writeFile("./currentPrice.txt", price, function (err) {
+    if (err) return console.log(err);
+  });
+}
+
 // Schedule tasks to be run on every 1 hour
-cron.schedule("0 * * * *", function () {
+cron.schedule("* * * * *", function () {
   getGoldPrice((text) => {
-    if (currentPrice === text) return;
-    currentPrice = text;
-    chatIds.forEach((chatId) => {
-      bot.sendMessage(chatId, text, {
-        parse_mode: "HTML",
+    loadCurrentPrice((currentPrice) => {
+      if (currentPrice === text) return;
+      currentPrice = text;
+      chatIds.forEach((chatId) => {
+        bot.sendMessage(chatId, text, {
+          parse_mode: "HTML",
+        });
       });
+      saveCurrentPrice(currentPrice);
     });
   });
 });
