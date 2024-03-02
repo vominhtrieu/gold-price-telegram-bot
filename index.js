@@ -29,7 +29,6 @@ const loadChatIdsFromFile = () => {
 loadChatIdsFromFile();
 
 bot.onText(/\/start/, (msg) => {
-  console.log("ALo");
   bot.sendMessage(
     msg.chat.id,
     "Chào mừng bạn đến với bot nhận thông tin giá vàng.\nBạn đã được thêm vào danh sách nhận thông tin giá vàng.\nMã số của bạn là: " +
