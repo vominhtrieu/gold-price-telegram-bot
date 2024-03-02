@@ -63,6 +63,8 @@ bot.on("message", async (msg) => {
         }
       );
       break;
+    case "/start":
+      break;
     default:
       bot.sendMessage(
         msg.chat.id,
