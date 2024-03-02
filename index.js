@@ -52,6 +52,13 @@ bot.on("message", async (msg) => {
     case "/end":
       chatIds = chatIds.filter((id) => id !== msg.chat.id);
       saveChatIdsToFile();
+      bot.sendMessage(
+        msg.chat.id,
+        "Bạn đã hủy đăng ký nhận giá vàng thành công.",
+        {
+          parse_mode: "HTML",
+        }
+      );
       break;
     case "/help":
       bot.sendMessage(
