@@ -29,6 +29,7 @@ const loadChatIdsFromFile = () => {
 loadChatIdsFromFile();
 
 bot.onText(/\/start/, (msg) => {
+  console.log("ALo");
   bot.sendMessage(
     msg.chat.id,
     "Chào mừng bạn đến với bot nhận thông tin giá vàng.\nBạn đã được thêm vào danh sách nhận thông tin giá vàng.\nMã số của bạn là: " +
@@ -41,12 +42,35 @@ bot.onText(/\/start/, (msg) => {
 });
 
 bot.on("message", async (msg) => {
-  if (msg.text === "/get") {
-    getGoldPrice((text) => {
-      bot.sendMessage(msg.chat.id, text, {
-        parse_mode: "HTML",
+  switch (msg.text) {
+    case "/get":
+      getGoldPrice((text) => {
+        bot.sendMessage(msg.chat.id, text, {
+          parse_mode: "HTML",
+        });
       });
-    });
+      break;
+    case "/end":
+      chatIds = chatIds.filter((id) => id !== msg.chat.id);
+      saveChatIdsToFile();
+      break;
+    case "/help":
+      bot.sendMessage(
+        msg.chat.id,
+        "Bot hỗ trợ các lệnh sau: \n - <code>/start</code>: Đăng ký nhận giá vàng \n - <code>/get</code>: Lấy giá vàng hiện tại \n - <code>/end</code>: Hủy đăng ký nhận giá vàng",
+        {
+          parse_mode: "HTML",
+        }
+      );
+      break;
+    default:
+      bot.sendMessage(
+        msg.chat.id,
+        "Lệnh không hợp lệ. Nhập <code>/help</code> để xem hướng dẫn.",
+        {
+          parse_mode: "HTML",
+        }
+      );
   }
 });
 
@@ -89,7 +113,7 @@ const saveCurrentPrice = (price) => {
   fs.writeFile("./currentPrice.txt", price, function (err) {
     if (err) return console.log(err);
   });
-}
+};
 
 // Schedule tasks to be run on every 1 hour
 cron.schedule("0 * * * *", function () {
