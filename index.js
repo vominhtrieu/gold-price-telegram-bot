@@ -41,6 +41,8 @@ bot.onText(/\/start/, (msg) => {
 });
 
 bot.on("message", async (msg) => {
+  console.log(msg.chat.id + ": " + msg.text);
+
   switch (msg.text) {
     case "/get":
       getGoldPrice((text) => {
